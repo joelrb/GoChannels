@@ -10,17 +10,15 @@ var wg = sync.WaitGroup{}
 func main() {
 	ch := make(chan int)
 	wg.Add(2)
-	go func() {
+	go func(ch <-chan int) { // Receive only channel
 		i := <-ch
 		fmt.Println(i)
-		ch <- 27
 		wg.Done()
-	}()
-	go func() {
+	}(ch)
+	go func(ch chan<- int) { // Send only channel
 		ch <- 42
-		fmt.Println(<-ch)
 		wg.Done()
-	}()
+	}(ch)
 	wg.Wait()
 
 }
